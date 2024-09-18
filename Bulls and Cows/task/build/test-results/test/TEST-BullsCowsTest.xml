@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BullsCowsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-09-18T10:08:02" hostname="DESKTOP-P3T3MT7" time="0.188">
+  <properties/>
+  <testcase name="start" classname="BullsCowsTest" time="0.188"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+> 3601
+Grade: None. The secret code is 8255.
+?[1;31m
+Start test 2?[0m
+> 8255
+Grade: 3 cow(s). The secret code is 5427.
+?[1;31m
+Start test 3?[0m
+> 1368
+Grade: 1 bull(s) and 1 cow(s). The secret code is 1187.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

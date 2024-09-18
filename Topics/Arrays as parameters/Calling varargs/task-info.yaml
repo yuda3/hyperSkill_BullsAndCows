@@ -1,0 +1,26 @@
+type: matching
+captions:
+  - method(0);
+  - "method(1, 2, 3);"
+  - "method(new int[] { 1, 2 });"
+  - method();
+  - method(null);
+options:
+  - 1
+  - The method throws an exception.
+  - 3
+  - 2
+  - 0
+files:
+  - name: src/Task.java
+    visible: true
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/2756#comment
+status: Solved
+record: -1
+ordering:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
