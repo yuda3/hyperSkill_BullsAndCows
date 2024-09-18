@@ -4,42 +4,77 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+    private static final int CODE_LENGTH = 4;
+    private static final int MIN_NUMBER = 1000;
+    private static final int MAX_NUMBER = 9999;
+
     public static void main(String[] args) {
-        Random random = new Random();
-        int secretNumber = random.nextInt(10000);
-        String secretNumberString = String.valueOf(secretNumber);
-        char[] secret = secretNumberString.toCharArray();
+        int secretNumber = generateSecretNumber();
+        String secretCode = String.format("%04d", secretNumber);
+
         Scanner scanner = new Scanner(System.in);
-        secretNumber = secretNumber < 1000 ? secretNumber + 1000 : secretNumber;
-        String yourAnswer = scanner.next();
-        char[] your = yourAnswer.toCharArray();
+        System.out.println("Enter your guess (a 4-digit number):");
+        String guess = scanner.nextLine();
+
+        if (isValidGuess(guess)) {
+            Result result = calculateResult(secretCode, guess);
+            printResult(result, secretNumber);
+        } else {
+            System.out.println("Invalid input. Please enter a 4-digit number.");
+        }
+
+        scanner.close();
+    }
+
+    private static int generateSecretNumber() {
+        Random random = new Random();
+        return random.nextInt(MAX_NUMBER - MIN_NUMBER + 1) + MIN_NUMBER;
+    }
+
+    private static boolean isValidGuess(String guess) {
+        return guess.matches("\\d{4}");
+    }
+
+    private static Result calculateResult(String secretCode, String guess) {
         int bulls = 0;
         int cows = 0;
 
-        for (int i = 0; i < your.length; i++) {
-            if (your[i] == secret[i]) {
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            char secretDigit = secretCode.charAt(i);
+            char guessDigit = guess.charAt(i);
+
+            if (secretDigit == guessDigit) {
                 bulls++;
-            } else {
-                for (int j = 0; j < secret.length; j++) {
-                    if (your[i] == secret[j]) {
-                        cows++;
-                    }
-                }
+            } else if (secretCode.contains(String.valueOf(guessDigit))) {
+                cows++;
             }
         }
 
-        judgment(bulls, cows, secretNumber);
+        return new Result(bulls, cows);
     }
 
-    private static void judgment(int bulls, int cows, int secretNumber) {
-        if(bulls > 0 && cows > 0) {
-            System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s). The secret code is " + secretNumber + ".");
-        } else if (bulls > 0) {
-            System.out.println("Grade: " + bulls + " bull(s). The secret code is " + secretNumber + ".");
-        } else if (cows > 0) {
-            System.out.println("Grade: " + cows + " cow(s). The secret code is " + secretNumber + ".");
-        }else {
-            System.out.println("Grade: None. The secret code is " + secretNumber + ".");
+    private static void printResult(Result result, int secretNumber) {
+        if (result.bulls > 0 && result.cows > 0) {
+            System.out.printf("Grade: %d bull(s) and %d cow(s). The secret code is %d.%n",
+                    result.bulls, result.cows, secretNumber);
+        } else if (result.bulls > 0) {
+            System.out.printf("Grade: %d bull(s). The secret code is %d.%n",
+                    result.bulls, secretNumber);
+        } else if (result.cows > 0) {
+            System.out.printf("Grade: %d cow(s). The secret code is %d.%n",
+                    result.cows, secretNumber);
+        } else {
+            System.out.printf("Grade: None. The secret code is %d.%n", secretNumber);
+        }
+    }
+
+    private static class Result {
+        int bulls;
+        int cows;
+
+        Result(int bulls, int cows) {
+            this.bulls = bulls;
+            this.cows = cows;
         }
     }
 }
