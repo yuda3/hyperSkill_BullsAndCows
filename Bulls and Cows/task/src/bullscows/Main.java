@@ -1,56 +1,76 @@
 package bullscows;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-    private static final int CODE_LENGTH = 4;
-    private static final int MIN_NUMBER = 1000;
-    private static final int MAX_NUMBER = 9999;
+    private static final Random random = new Random();
 
     public static void main(String[] args) {
-        int secretNumber = generateSecretNumber();
-        String secretCode = String.format("%04d", secretNumber);
-
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your guess (a 4-digit number):");
-        String guess = scanner.nextLine();
-
-        if (isValidGuess(guess)) {
-            Result result = calculateResult(secretCode, guess);
-            printResult(result, secretNumber);
+        String secretCode;
+        System.out.println("Please enter the secret code's length:");
+        int size = scanner.nextInt();
+        if (size > 10) {
+            System.out.println("Error: can't generate a secret number with a length of " + size + " because there aren't enough unique digits.");
+            return;
+        } else if (size < 1) {
+            System.out.println("Error: can't generate a secret number with a length of 0.");
+            return;
         } else {
-            System.out.println("Invalid input. Please enter a 4-digit number.");
+            secretCode = generateSecretCode(size);
+            System.out.println("The random secret number is " + secretCode + ".");
         }
 
-        scanner.close();
+        int count = 1;
+        System.out.println("Okay, let's start a game!");
+        while (true) {
+            System.out.println("Turn " + count + ":");
+            String guess = scanner.next();
+
+            if (guess.length() != size) {
+                System.out.println("Error: Your guess must be " + size + " digits long.");
+                continue;
+            }
+
+            int bulls = 0;
+            int cows = 0;
+
+            for (int i = 0; i < size; i++) {
+                char secretDigit = secretCode.charAt(i);
+                char guessDigit = guess.charAt(i);
+
+                if (secretDigit == guessDigit) {
+                    bulls++;
+                } else if (secretCode.contains(String.valueOf(guessDigit))) {
+                    cows++;
+                }
+            }
+
+            count++;
+            if (bulls == size) {
+                System.out.println("Grade: " + bulls + " bulls");
+                System.out.println("Congratulations! You guessed the secret code.");
+                break;
+            } else {
+                System.out.println("Grade: " + bulls + " bulls and " + cows + " cows");
+            }
+        }
     }
 
-    private static int generateSecretNumber() {
-        Random random = new Random();
-        return random.nextInt(MAX_NUMBER - MIN_NUMBER + 1) + MIN_NUMBER;
+    private static String generateSecretCode(int size) {
+        StringBuilder secretCode = new StringBuilder(size);
+        while (secretCode.length() < size) {
+            int nextDigit = random.nextInt(10);
+            char nextChar = (char) (nextDigit + '0');
+            if (secretCode.indexOf(String.valueOf(nextChar)) == -1) {
+                secretCode.append(nextChar);
+            }
+        }
+        return secretCode.toString();
     }
 
     private static boolean isValidGuess(String guess) {
         return guess.matches("\\d{4}");
-    }
-
-    private static Result calculateResult(String secretCode, String guess) {
-        int bulls = 0;
-        int cows = 0;
-
-        for (int i = 0; i < CODE_LENGTH; i++) {
-            char secretDigit = secretCode.charAt(i);
-            char guessDigit = guess.charAt(i);
-
-            if (secretDigit == guessDigit) {
-                bulls++;
-            } else if (secretCode.contains(String.valueOf(guessDigit))) {
-                cows++;
-            }
-        }
-
-        return new Result(bulls, cows);
     }
 
     private static void printResult(Result result, int secretNumber) {
