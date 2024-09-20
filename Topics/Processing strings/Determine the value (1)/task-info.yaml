@@ -1,0 +1,17 @@
+type: choice
+is_multiple_choice: false
+options:
+  - text: '"SKILL"'
+  - text: '"-"'
+  - text: '"HYPER"'
+  - text: '"Y"'
+  - text: '"H"'
+files:
+  - name: src/Task.java
+    visible: true
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/3288#comment
+status: Solved
+record: -1
+custom_name: Determine the value
+local_check: false
